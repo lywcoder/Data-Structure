@@ -46,15 +46,15 @@ void LinkedList::insert(int idx, int val) {
 
 //按升序插入 val：找到第一个 >= val 的节点，插到它前面
 void LinkedList::insertSorted(int val) {
-    listNode* p = head;
+    listNode* p = head; //p是指向头结点的指针
     while (p->next != nullptr && p->next->data < val) {
         p = p->next;
     }
-    p->next = new listNode(val, p->next);
+    p->next = new listNode(val, p->next); //直接插入这个目标节点，节点的next是p的next，获取即初始化
     if (p == tail) {
-        tail = p->next;
+        tail = p->next; //边界条件,有可能调整tail的值大小
     }
-    size++;
+    size++; //节点加一
 }
 
 //尾插，O(1)
@@ -150,6 +150,7 @@ void LinkedList::print() const {
 }
 
 //基于迭代器合并两个升序链表，结果（升序）写入 result
+//二路归并
 void LinkedList::mergeSorted(const LinkedList& a, const LinkedList& b, LinkedList& result) {
     LinkedListIterator it1 = a.begin();
     LinkedListIterator it2 = b.begin();

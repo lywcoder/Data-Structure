@@ -20,17 +20,17 @@ private:
     Iterator(listNode* p) : ptr(p) {}
 
 public:
-    int& operator*() const { return ptr->data; }
-    Iterator& operator++() { ptr = ptr->next; return *this; }
-    Iterator operator++(int) {
+    int& operator*() const { return ptr->data; } //取出其中迭代器所指的数据
+    Iterator& operator++() { ptr = ptr->next; return *this; } //前置加加，直接返回引用
+    Iterator operator++(int) { //后置加加，先存储temp，然后加加返回temp
         Iterator tmp = *this;
         ptr = ptr->next;
         return tmp;
     }
-    bool operator==(const Iterator& o) const { return ptr == o.ptr; }
-    bool operator!=(const Iterator& o) const { return ptr != o.ptr; }
+    bool operator==(const Iterator& o) const { return ptr == o.ptr; } //迭代器相等
+    bool operator!=(const Iterator& o) const { return ptr != o.ptr; } //迭代器不等
 
-    friend class LinkedList;
+    friend class LinkedList; // 设计的是友元类，LinkedList类可以访问其中的迭代器
 };
 
 class LinkedList {
@@ -51,15 +51,15 @@ public:
 
     void output() const;           //基于迭代器遍历，输出 sum(i ^ chain[i])
 
-    void print() const;            //基于迭代器遍历，打印链表元素
+    void print() const;            //用于调试的函数，打印链表的步骤，基于迭代器遍历，打印链表元素
 
     Iterator begin() const { return Iterator(head->next); }
     
     Iterator end() const { return Iterator(nullptr); }
 
 private:
-    listNode* head; //头结点（哑节点，不存数据）
-    int size;       //链表节点个数
+    listNode* head; //指向头结点（哑节点，不存数据）
+    int size;       //链表结点个数
 };
 
 #endif
