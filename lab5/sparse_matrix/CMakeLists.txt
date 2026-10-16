@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.10)
+project(SparseMatrixExercise LANGUAGES CXX)
+
+add_executable(sparse_matrix main.cpp SparseMatrix.cpp)
+target_compile_features(sparse_matrix PRIVATE cxx_std_14)
+set_target_properties(sparse_matrix PROPERTIES CXX_EXTENSIONS OFF)
+if(MSVC)
+    target_compile_options(sparse_matrix PRIVATE /W4 /utf-8)
+else()
+    target_compile_options(sparse_matrix PRIVATE -Wall -Wextra -Wpedantic)
+endif()

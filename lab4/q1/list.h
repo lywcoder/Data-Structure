@@ -20,6 +20,8 @@ private:
     Iterator(listNode* p) : ptr(p) {}
 
 public:
+    friend class LinkedList; // 设计的是友元类，LinkedList类可以访问其中的迭代器
+    
     int& operator*() const { return ptr->data; } //取出其中迭代器所指的数据
     Iterator& operator++() { ptr = ptr->next; return *this; } //前置加加，直接返回引用
     Iterator operator++(int) { //后置加加，先存储temp，然后加加返回temp
@@ -29,8 +31,6 @@ public:
     }
     bool operator==(const Iterator& o) const { return ptr == o.ptr; } //迭代器相等
     bool operator!=(const Iterator& o) const { return ptr != o.ptr; } //迭代器不等
-
-    friend class LinkedList; // 设计的是友元类，LinkedList类可以访问其中的迭代器
 };
 
 class LinkedList {
