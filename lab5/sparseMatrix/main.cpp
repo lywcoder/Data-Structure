@@ -1,5 +1,4 @@
 #include "SparseMatrix.h"
-#include <iostream>
 
 int main() {
     // 优化标准输入输出性能

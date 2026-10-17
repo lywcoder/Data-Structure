@@ -1,10 +1,6 @@
 #include "sparseMatrix.h"
 #include <algorithm>
-#include <cinttypes>
 #include <cstddef>
-#include <iterator>
-#include <stdexcept>
-#include <vector>
 
 SparseMatrix::SparseMatrix(int r, int c) : rows(r), cols(c) {}
 

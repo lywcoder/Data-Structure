@@ -5,8 +5,8 @@
 
 //稀疏矩阵的三元组节点定义
 struct MatrixTerm {
-    int row; // 行序号
-    int col; // 列序号
+    int row; // 行序号 (从1开始)
+    int col; // 列序号 (从1开始)
     int value; // 元素值
 };
 
