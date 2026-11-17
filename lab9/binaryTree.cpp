@@ -1,6 +1,6 @@
-#include <cstdio>
+#include <iostream>
+using namespace std;
 
-// 手写模板栈（替代 std::stack）
 template <typename T>
 class Stack {
 private:
@@ -9,7 +9,7 @@ private:
     int capacity;
 
 public:
-    Stack(int cap = 100005) : topIdx(-1), capacity(cap) {
+    Stack(int cap = 100000) : topIdx(-1), capacity(cap) {
         data = new T[capacity];
     }
     ~Stack() {
@@ -29,7 +29,7 @@ public:
     }
 };
 
-// 手写模板队列（替代 std::queue）
+// 手写泛型顺序队列（替代 std::queue）
 template <typename T>
 class Queue {
 private:
@@ -39,7 +39,7 @@ private:
     int capacity;
 
 public:
-    Queue(int cap = 100005) : head(0), tail(0), capacity(cap) {
+    Queue(int cap = 100000) : head(0), tail(0), capacity(cap) {
         data = new T[capacity];
     }
     ~Queue() {
@@ -59,13 +59,13 @@ public:
     }
 };
 
-// 二叉树链表节点定义
+// 二叉树链表节点
 struct TreeNode {
     int val;
     TreeNode* left;
     TreeNode* right;
-    int subSize;    // 以当前节点为根的子树节点数目
-    int subHeight;  // 以当前节点为根的子树高度
+    int subSize;    // 子树节点数目
+    int subHeight;  // 子树高度
 
     TreeNode() : val(0), left(nullptr), right(nullptr), subSize(0), subHeight(0) {}
 };
@@ -74,36 +74,11 @@ struct TreeNode {
 class BinaryTree {
 private:
     int n;
-    TreeNode* root;
-    TreeNode* nodes;  // 节点内存池，内部完全通过 left / right 指针构成链式结构
-
-    // 递归前序遍历辅助函数
-    void preOrderRecursive(TreeNode* node, bool& first) const {
-        if (node == nullptr) return;
-        if (!first) printf(" ");
-        printf("%d", node->val);
-        first = false;
-        preOrderRecursive(node->left, first);
-        preOrderRecursive(node->right, first);
-    }
-
-    // 一次后序 DFS 计算所有子树的节点数目
-    int calcSizeDFS(TreeNode* node) {
-        if (node == nullptr) return 0;
-        node->subSize = 1 + calcSizeDFS(node->left) + calcSizeDFS(node->right);
-        return node->subSize;
-    }
-
-    // 一次后序 DFS 计算所有子树的高度
-    int calcHeightDFS(TreeNode* node) {
-        if (node == nullptr) return 0;
-        int leftH = calcHeightDFS(node->left);
-        int rightH = calcHeightDFS(node->right);
-        node->subHeight = 1 + (leftH > rightH ? leftH : rightH);
-        return node->subHeight;
-    }
 
 public:
+    TreeNode* root;
+    TreeNode* nodes;
+
     BinaryTree(int nodeCount) : n(nodeCount), root(nullptr) {
         nodes = new TreeNode[n + 1];
         for (int i = 1; i <= n; ++i) {
@@ -115,11 +90,11 @@ public:
         delete[] nodes;
     }
 
-    // 读取输入并构建链式二叉树
+    // 读取输入构建链式二叉树
     void build() {
         for (int i = 1; i <= n; ++i) {
             int l, r;
-            scanf("%d %d", &l, &r);
+            cin >> l >> r;
             if (l != -1) nodes[i].left = &nodes[l];
             if (r != -1) nodes[i].right = &nodes[r];
         }
@@ -128,18 +103,18 @@ public:
         }
     }
 
-    // 1. 递归前序遍历
-    void preOrder() const {
-        bool first = true;
-        preOrderRecursive(root, first);
-        printf("\n");
+    // 1. 递归前序遍历（直接单函数递归）
+    void preOrder(TreeNode* node) {
+        if (node == nullptr) return;
+        cout << node->val << " ";
+        preOrder(node->left);
+        preOrder(node->right);
     }
 
-    // 2. 非递归中序遍历（左 -> 根 -> 右）
-    void inOrder() const {
-        Stack<TreeNode*> st(n + 5);
+    // 2. 非递归中序遍历
+    void inOrder() {
+        Stack<TreeNode*> st(n);
         TreeNode* curr = root;
-        bool first = true;
 
         while (curr != nullptr || !st.empty()) {
             while (curr != nullptr) {
@@ -148,22 +123,17 @@ public:
             }
             curr = st.top();
             st.pop();
-
-            if (!first) printf(" ");
-            printf("%d", curr->val);
-            first = false;
-
+            cout << curr->val << " ";
             curr = curr->right;
         }
-        printf("\n");
+        cout << "\n";
     }
 
-    // 3. 非递归后序遍历（左 -> 右 -> 根，单栈 + lastVisited 指针法）
-    void postOrder() const {
-        Stack<TreeNode*> st(n + 5);
+    // 3. 非递归后序遍历
+    void postOrder() {
+        Stack<TreeNode*> st(n);
         TreeNode* curr = root;
         TreeNode* lastVisited = nullptr;
-        bool first = true;
 
         while (curr != nullptr || !st.empty()) {
             if (curr != nullptr) {
@@ -171,78 +141,77 @@ public:
                 curr = curr->left;
             } else {
                 TreeNode* peekNode = st.top();
-                // 若右子树存在且尚未被访问，则转向右子树
                 if (peekNode->right != nullptr && lastVisited != peekNode->right) {
                     curr = peekNode->right;
                 } else {
-                    // 左右子树均处理完毕，访问当前根节点
-                    if (!first) printf(" ");
-                    printf("%d", peekNode->val);
-                    first = false;
+                    cout << peekNode->val << " ";
                     lastVisited = peekNode;
                     st.pop();
                 }
             }
         }
-        printf("\n");
+        cout << "\n";
     }
 
-    // 4. 层次遍历（队列 BFS）
-    void levelOrder() const {
-        if (root == nullptr) {
-            printf("\n");
-            return;
-        }
-        Queue<TreeNode*> q(n + 5);
+    // 4. 层次遍历
+    void levelOrder() {
+        Queue<TreeNode*> q(n);
         q.push(root);
-        bool first = true;
 
         while (!q.empty()) {
             TreeNode* curr = q.front();
             q.pop();
-
-            if (!first) printf(" ");
-            printf("%d", curr->val);
-            first = false;
+            cout << curr->val << " ";
 
             if (curr->left != nullptr) q.push(curr->left);
             if (curr->right != nullptr) q.push(curr->right);
         }
-        printf("\n");
+        cout << "\n";
     }
 
-    // 5. 计算并输出以每个节点为根的子树节点数目
-    void printSubtreeSizes() {
-        calcSizeDFS(root);
-        for (int i = 1; i <= n; ++i) {
-            if (i > 1) printf(" ");
-            printf("%d", nodes[i].subSize);
-        }
-        printf("\n");
+    // 5. 计算子树节点数目（直接单函数递归）
+    int calcSize(TreeNode* node) {
+        if (node == nullptr) return 0;
+        node->subSize = 1 + calcSize(node->left) + calcSize(node->right);
+        return node->subSize;
     }
 
-    // 6. 计算并输出以每个节点为根的子树高度
-    void printSubtreeHeights() {
-        calcHeightDFS(root);
-        for (int i = 1; i <= n; ++i) {
-            if (i > 1) printf(" ");
-            printf("%d", nodes[i].subHeight);
-        }
-        printf("\n");
+    // 6. 计算子树高度（直接单函数递归）
+    int calcHeight(TreeNode* node) {
+        if (node == nullptr) return 0;
+        int leftH = calcHeight(node->left);
+        int rightH = calcHeight(node->right);
+        node->subHeight = 1 + (leftH > rightH ? leftH : rightH);
+        return node->subHeight;
     }
 };
 
 int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
     int n;
-    if (scanf("%d", &n) == 1) {
-        BinaryTree tree(n);
-        tree.build();
-        tree.preOrder();
-        tree.inOrder();
-        tree.postOrder();
-        tree.levelOrder();
-        tree.printSubtreeSizes();
-        tree.printSubtreeHeights();
+    std::cin >> n;
+    BinaryTree tree(n);
+    tree.build();
+
+    tree.preOrder(tree.root);
+    cout << "\n";
+
+    tree.inOrder();
+    tree.postOrder();
+    tree.levelOrder();
+
+    tree.calcSize(tree.root);
+    for (int i = 1; i <= n; ++i) {
+        cout << tree.nodes[i].subSize << " ";
     }
+    cout << "\n";
+
+    tree.calcHeight(tree.root);
+    for (int i = 1; i <= n; ++i) {
+        cout << tree.nodes[i].subHeight << " ";
+    }
+    cout << "\n";
     return 0;
 }
