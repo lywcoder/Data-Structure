@@ -74,7 +74,7 @@ int main() {
 
     int n;
     cin >> n;
-    int initArr[5005];
+    int initArr[5000];
     for (int i = 0; i < n; ++i) {
         cin >> initArr[i];
     }
@@ -99,7 +99,7 @@ int main() {
         } else if (op == 3) {
             int k;
             cin >> k;
-            int sortArr[10005];
+            int sortArr[10000];
             for (int i = 0; i < k; ++i) {
                 cin >> sortArr[i];
             }

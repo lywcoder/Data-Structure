@@ -53,7 +53,7 @@ public:
     }
 };
 
-char s[1000005];
+char s[1000000];
 
 int main() {
     ios::sync_with_stdio(false);
@@ -64,7 +64,7 @@ int main() {
     // 1. 统计 26 个小写字母频次
     int freq[26] = {0};
     int len = 0;
-    for (; s[len] != '\0'; ++len) {
+    for (len = 0; s[len] != '\0'; ++len) {
         freq[s[len] - 'a']++;
     }
 
