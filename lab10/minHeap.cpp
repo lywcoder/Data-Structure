@@ -51,7 +51,8 @@ public:
 
     // 插入元素
     void push(int val) {
-        data[++sz] = val;
+        sz++;
+        data[sz] = val;
         siftUp(sz);
     }
 
@@ -68,7 +69,6 @@ public:
 };
 
 int main() {
-    // 加速输入输出，应对 10ms 时间限制
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
@@ -106,7 +106,7 @@ int main() {
             // 直接重建最小堆并依次弹出堆顶，即为升序结果
             heap.build(sortArr, k);
             for (int i = 0; i < k; ++i) {
-                cout << heap.top() << (i == k - 1 ? "" : " ");
+                cout << heap.top();
                 heap.pop();
             }
             cout << "\n";

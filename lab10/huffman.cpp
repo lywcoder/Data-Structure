@@ -40,7 +40,8 @@ public:
     }
 
     void push(int val) {
-        data[++sz] = val;
+        sz++;
+        data[sz] = val;
         siftUp(sz);
     }
 
@@ -76,13 +77,13 @@ int main() {
         }
     }
 
-    // 特判：只有 1 种字符时，每个字符占 1 bit
+    //只有 1 种字符时，每个字符占 1 bit
     if (heap.size() == 1) {
         cout << len << "\n";
         return 0;
     }
 
-    // 3. 贪心合并：累加所有非叶节点权值即为总编码长度
+    //贪心合并：累加所有非叶节点权值即为总编码长度
     long long totalLen = 0;
     while (heap.size() > 1) {
         int merged = heap.pop() + heap.pop();
